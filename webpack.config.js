@@ -1,5 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
+const WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
   entry: ['@babel/polyfill', './src/app.jsx'],
@@ -11,9 +12,21 @@ module.exports = {
         use: ['babel-loader'],
       },
       {
-        // sass / scss loader for webpack
         test: /\.(sass|scss|css)$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                auto: true,
+                exportLocalsConvention: 'camelCaseOnly',
+                localIdentName: '[path][name]__[local]',
+              },
+            },
+          },
+          'sass-loader',
+        ],
       },
     ],
   },
@@ -29,5 +42,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'style.css',
     }),
+    // notifies user with system notification that build process is complete
+    new WebpackNotifierPlugin({ alwaysNotify: true }),
   ],
 };
