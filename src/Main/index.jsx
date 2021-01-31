@@ -17,6 +17,11 @@ class Main extends React.Component {
   componentDidMount() {
     this.refreshCanvasSize();
     window.addEventListener('resize', this.updateCanvasSize);
+    window.requestAnimationFrame(this.redraw);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateCanvasSize);
   }
 
   updateCanvasSize = () => {
@@ -34,8 +39,9 @@ class Main extends React.Component {
     }, 1);
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateCanvasSize);
+  redraw = (timestamp) => {
+    // TODO break the cycle on unmounting
+    window.requestAnimationFrame(this.redraw);
   }
 
   render() {
